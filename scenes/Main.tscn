@@ -1,14 +1,46 @@
 [gd_scene format=3 uid="uid://dsyfep1odrxje"]
 
-[ext_resource type="PackedScene" uid="uid://ds60n6krsavle" path="res://scenes/Ground.tscn" id="1_elqb8"]
+[ext_resource type="Texture2D" uid="uid://cduy806d2gpel" path="res://assets/background/bg 1 arena.png" id="1_rvslj"]
+[ext_resource type="FontFile" uid="uid://b62o87y7hc4wp" path="res://assets/fonts/static/NotoSans-Medium.ttf" id="2_0bbpv"]
+[ext_resource type="Script" uid="uid://b5e3a540b44xl" path="res://scripts/NewGame.gd" id="3_0bbpv"]
 
-[node name="Root" type="Node2D" unique_id=918599496]
+[node name="RegressedVillainsCaretaker" type="Node2D" unique_id=1617299605]
 
-[node name="Ground" parent="." unique_id=673580990 instance=ExtResource("1_elqb8")]
-position = Vector2(296, 324)
+[node name="Game Cover" type="TextureRect" parent="." unique_id=1095081219]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_rvslj")
 
-[node name="Ground2" parent="." unique_id=1551337937 instance=ExtResource("1_elqb8")]
-position = Vector2(856, 324)
+[node name="New Game" type="LinkButton" parent="." unique_id=1238199840]
+offset_left = 164.0
+offset_top = 568.0
+offset_right = 477.0
+offset_bottom = 651.0
+theme_override_fonts/font = ExtResource("2_0bbpv")
+theme_override_font_sizes/font_size = 60
+text = "New Game"
+underline = 2
+script = ExtResource("3_0bbpv")
+scene_to_load = "Act 1"
 
-[node name="Ground3" parent="." unique_id=1648397147 instance=ExtResource("1_elqb8")]
-position = Vector2(576, 394)
+[node name="Load Game" type="LinkButton" parent="." unique_id=855550914]
+offset_left = 165.0
+offset_top = 705.0
+offset_right = 494.0
+offset_bottom = 788.0
+theme_override_fonts/font = ExtResource("2_0bbpv")
+theme_override_font_sizes/font_size = 60
+text = "Load Game"
+underline = 2
+
+[node name="Exit" type="LinkButton" parent="." unique_id=837817577]
+offset_left = 164.0
+offset_top = 847.0
+offset_right = 269.0
+offset_bottom = 930.0
+theme_override_fonts/font = ExtResource("2_0bbpv")
+theme_override_font_sizes/font_size = 60
+text = "Exit"
+underline = 2
+
+[connection signal="pressed" from="New Game" to="New Game" method="_on_Select_New_Game_pressed"]
