@@ -8,14 +8,25 @@
 [ext_resource type="FontFile" uid="uid://dogm4bruhqwnh" path="res://assets/fonts/NgeticModern-Regular.otf" id="3_aijdm"]
 [ext_resource type="FontFile" uid="uid://v70lv3oa2inu" path="res://assets/fonts/Lora-VariableFont_wght.ttf" id="6_qn3kx"]
 [ext_resource type="AudioStream" uid="uid://g7qqge6d3gly" path="res://assets/sounds/Chinese traditional music - Erhu (Chinese violin), No copyright.mp3" id="8_ib7mi"]
+[ext_resource type="PackedScene" uid="uid://d0yjx6be6c6ng" path="res://scenes/SaveLoadMenu.tscn" id="9_qn3kx"]
 
 [node name="Act1" type="Node" unique_id=188126175]
 script = ExtResource("1_22a6r")
 
-[node name="Arena BG" type="TextureRect" parent="." unique_id=2056248913]
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="ColorRect" type="ColorRect" parent="." unique_id=910560958]
+offset_left = 30.0
+offset_top = 28.0
+offset_right = 1498.0
+offset_bottom = 857.0
+
+[node name="Arena BG" type="TextureRect" parent="ColorRect" unique_id=2056248913]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 1.0
+offset_right = 1465.0
+offset_bottom = 830.0
 texture = ExtResource("1_r02wo")
+expand_mode = 1
 
 [node name="AnLu" type="Sprite2D" parent="." unique_id=974106174]
 position = Vector2(100, 200)
@@ -32,6 +43,7 @@ centered = false
 [node name="Frame" type="TextureRect" parent="." unique_id=1132696977]
 offset_right = 1920.0
 offset_bottom = 1080.0
+mouse_filter = 0
 texture = ExtResource("2_142ld")
 
 [node name="CharaName" type="Label" parent="." unique_id=1361330131]
@@ -84,22 +96,18 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -323.0
+offset_left = -351.0
 offset_top = 117.0
-offset_right = -29.0
+offset_right = -57.0
 offset_bottom = 512.0
 grow_horizontal = 0
 grow_vertical = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_stretch_ratio = 0.0
+mouse_filter = 0
+mouse_force_pass_scroll_events = false
+theme_override_constants/separation = 20
 alignment = 1
-
-[node name="Inventory" type="LinkButton" parent="MenuBox" unique_id=11762403]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_aijdm")
-theme_override_font_sizes/font_size = 55
-text = "Inventory"
-underline = 2
 
 [node name="Save" type="LinkButton" parent="MenuBox" unique_id=2120297921]
 layout_mode = 2
@@ -134,6 +142,7 @@ autoplay = true
 playback_type = 1
 
 [node name="FadeOverlay" type="ColorRect" parent="." unique_id=1390175955]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -153,3 +162,14 @@ theme_override_font_sizes/normal_font_size = 50
 theme_override_font_sizes/bold_font_size = 50
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ExitConfirm" type="ConfirmationDialog" parent="." unique_id=85336873]
+
+[node name="SaveLoadMenu" parent="." unique_id=1291083673 instance=ExtResource("9_qn3kx")]
+layer = 2
+visible = false
+
+[connection signal="pressed" from="MenuBox/Save" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MenuBox/Load" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="MenuBox/Exit" to="." method="_on_exit_link_button_pressed"]
+[connection signal="confirmed" from="ExitConfirm" to="." method="_on_exit_confirm_confirmed"]

@@ -1,23 +1,48 @@
 [gd_scene format=3 uid="uid://dsyfep1odrxje"]
 
+[ext_resource type="Script" uid="uid://7fghr08y78fb" path="res://scenes/Main.gd" id="1_rarhs"]
 [ext_resource type="Texture2D" uid="uid://cduy806d2gpel" path="res://assets/background/bg 1 arena.png" id="1_rvslj"]
-[ext_resource type="FontFile" uid="uid://b62o87y7hc4wp" path="res://assets/fonts/static/NotoSans-Medium.ttf" id="2_0bbpv"]
 [ext_resource type="Script" uid="uid://b5e3a540b44xl" path="res://scripts/NewGame.gd" id="3_0bbpv"]
+[ext_resource type="FontFile" uid="uid://dogm4bruhqwnh" path="res://assets/fonts/NgeticModern-Regular.otf" id="3_rarhs"]
+[ext_resource type="FontFile" uid="uid://2rngljt6we4d" path="res://assets/fonts/NotoSans-VariableFont_wdth,wght.ttf" id="4_vcsgt"]
+[ext_resource type="PackedScene" uid="uid://d0yjx6be6c6ng" path="res://scenes/SaveLoadMenu.tscn" id="6_c01mt"]
 
 [node name="RegressedVillainsCaretaker" type="Node2D" unique_id=1617299605]
+script = ExtResource("1_rarhs")
 
 [node name="Game Cover" type="TextureRect" parent="." unique_id=1095081219]
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("1_rvslj")
 
+[node name="ColorRect" type="ColorRect" parent="Game Cover" unique_id=360218336]
+layout_mode = 0
+offset_right = 880.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="Game Cover" unique_id=1958496783]
+layout_mode = 0
+offset_left = 219.0
+offset_top = 93.0
+offset_right = 662.0
+offset_bottom = 519.0
+theme_override_fonts/font = ExtResource("3_rarhs")
+theme_override_font_sizes/font_size = 120
+text = "Regressed
+Vilain's
+Caretaker"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="New Game" type="LinkButton" parent="." unique_id=1238199840]
 offset_left = 164.0
 offset_top = 568.0
 offset_right = 477.0
 offset_bottom = 651.0
-theme_override_fonts/font = ExtResource("2_0bbpv")
-theme_override_font_sizes/font_size = 60
+theme_override_fonts/font = ExtResource("4_vcsgt")
+theme_override_font_sizes/font_size = 70
 text = "New Game"
 underline = 2
 script = ExtResource("3_0bbpv")
@@ -28,8 +53,8 @@ offset_left = 165.0
 offset_top = 705.0
 offset_right = 494.0
 offset_bottom = 788.0
-theme_override_fonts/font = ExtResource("2_0bbpv")
-theme_override_font_sizes/font_size = 60
+theme_override_fonts/font = ExtResource("4_vcsgt")
+theme_override_font_sizes/font_size = 70
 text = "Load Game"
 underline = 2
 
@@ -38,9 +63,13 @@ offset_left = 164.0
 offset_top = 847.0
 offset_right = 269.0
 offset_bottom = 930.0
-theme_override_fonts/font = ExtResource("2_0bbpv")
-theme_override_font_sizes/font_size = 60
+theme_override_fonts/font = ExtResource("4_vcsgt")
+theme_override_font_sizes/font_size = 70
 text = "Exit"
 underline = 2
 
-[connection signal="pressed" from="New Game" to="New Game" method="_on_Select_New_Game_pressed"]
+[node name="SaveLoadMenu" parent="." unique_id=1291083673 instance=ExtResource("6_c01mt")]
+
+[connection signal="pressed" from="New Game" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="Load Game" to="." method="_on_load_game_pressed"]
+[connection signal="pressed" from="Exit" to="." method="_on_exit_button_pressed"]

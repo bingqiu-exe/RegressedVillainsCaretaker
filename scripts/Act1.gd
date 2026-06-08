@@ -16,13 +16,15 @@ const KEVIN_IMPATIENT = preload("res://assets/wu kaiwen sprites/kevin_impatient.
 const KEVIN_REALIZATION = preload("res://assets/wu kaiwen sprites/kevin_realization.png")
 const KEVIN_INSANE = preload("res://assets/wu kaiwen sprites/kevin_insane.png")
 
+@onready var save_menu = $SaveLoadMenu
 @onready var anlu_sprite = $AnLu
 @onready var kevin_sprite = $WuKaiwen
 @onready var dialogue_text = $Text
 @onready var char_name_label = $CharaName
 @onready var fade_overlay = $FadeOverlay
 @onready var intro_label = $FadeOverlay/Text
-var current_line = 0
+var save_folder = "res://saves/"
+var is_saving_mode = true
 var last_visible_chars = 0
 var is_intro = true
 
@@ -167,24 +169,30 @@ func _ready():
 	update_dialogue()
 
 func _input(event):
+	if save_menu.visible or $ExitConfirm.visible:
+		return
+
 	if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.pressed):
+		if event is InputEventMouseButton:
+			if save_menu.visible: 
+				return
+				
 		if dialogue_text.visible_ratio < 1.0:
 			dialogue_text.visible_ratio = 1.0
 		else:
-			current_line += 1
+			GameManager.current_line += 1
 			update_dialogue()
 
 func update_dialogue():
-	if current_line >= dialogue_data.size():
+	if GameManager.current_line >= dialogue_data.size():
 		return
 
-	var data = dialogue_data[current_line]
+	var data = dialogue_data[GameManager.current_line]
 	var is_black = data.get("is_black_screen", false)
 	
 	if is_black:
-		# --- STILL IN INTRO ---
 		fade_overlay.visible = true
-		fade_overlay.modulate.a = 1.0 # Keep it fully black
+		fade_overlay.modulate.a = 1.0 
 		intro_label.visible = true
 		dialogue_text.visible = false
 		char_name_label.visible = false
@@ -194,12 +202,9 @@ func update_dialogue():
 		var t = create_tween()
 		t.tween_property(intro_label, "visible_ratio", 1.0, 2.0)
 	else:
-		# --- TRANSITION TO ACT 1 ---
-		# Check if the overlay is still visible. If it is, fade it out!
 		if fade_overlay.visible == true:
 			fade_out_black_screen()
 		
-		# Reveal the main UI
 		dialogue_text.visible = true
 		char_name_label.visible = true
 		intro_label.visible = false
@@ -211,7 +216,6 @@ func update_dialogue():
 		var t = create_tween()
 		t.tween_property(dialogue_text, "visible_ratio", 1.0, 1.0)
 		
-		# Animate the characters
 		if data["side"] == "left":
 			apply_focus_animation(anlu_sprite, data["expression"])
 			apply_dim_animation(kevin_sprite)
@@ -238,9 +242,113 @@ func apply_dim_animation(sprite: Sprite2D):
 
 func fade_out_black_screen():
 	var tween = create_tween().set_parallel(true)
-	# Fade the black to transparent
 	tween.tween_property(fade_overlay, "modulate:a", 0.0, 2.0)
-	
-	# After 2 seconds, fully hide the node so it doesn't block mouse clicks
+
 	await get_tree().create_timer(2.0).timeout
 	fade_overlay.visible = false
+
+func _on_save_button_pressed() -> void:
+	is_saving_mode = true
+	save_menu.open_menu(true) 
+
+func _on_load_button_pressed() -> void:
+	is_saving_mode = false
+	save_menu.open_menu(false)
+
+func _on_slot_selected(slot_num: int):
+	if is_saving_mode:
+		GameManager.save_game(slot_num)
+	else:
+		GameManager.load_game(slot_num)
+
+func _on_exit_link_button_pressed() -> void:
+	$ExitConfirm.popup_centered()
+	
+func _on_exit_confirm_confirmed() -> void:
+	var target_scene = "res://scenes/Main.tscn"
+	
+	if FileAccess.file_exists(target_scene):
+		var error = get_tree().change_scene_to_file(target_scene)
+		if error != OK:
+			print("Scene change failed with error code: ", error)
+	else:
+		push_error("Exit failed: Scene not found at " + target_scene)
+
+# fitur pause dialog:
+#var is_dialogue_paused = false
+#var active_tween: Tween = null
+#--
+#if active_tween:
+	#active_tween.kill()
+#
+#active_tween = create_tween()
+#active_tween.tween_property(dialogue_text, "visible_ratio", 1.0, 1.0)
+#
+#func _input(event):
+	#if event.is_action_pressed("ui_focus_next") or (event is InputEventKey and event.keycode == KEY_P and event.pressed):
+		#toggle_pause_dialogue()
+		#return
+#
+	#if save_menu.visible or $ExitConfirm.visible or is_dialogue_paused:
+		#return
+#
+	#if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.pressed):
+		#if event is InputEventMouseButton:
+			#if save_menu.visible: 
+				#return
+				#
+		#if dialogue_text.visible_ratio < 1.0:
+			#dialogue_text.visible_ratio = 1.0
+		#else:
+			#GameManager.current_line += 1
+			#update_dialogue()
+
+#func toggle_pause_dialogue():
+	#is_dialogue_paused = !is_dialogue_paused
+	#
+	#if is_dialogue_paused:
+		#print("Dialog Di-pause")
+		#if active_tween and active_tween.is_running():
+			#active_tween.pause()
+		#dialogue_text.modulate.a = 0.5 
+	#else:
+		#print("Dialog Dilanjutkan")
+		#if active_tween:
+			#active_tween.play()
+		#dialogue_text.modulate.a = 1.0
+
+# -----------------------
+
+# fitur untuk backlog dialog
+
+# var dialogue_history: Array = []
+#
+# if GameManager.current_line > 0:
+	#var line_sebelumnya = dialogue_data[GameManager.current_line - 1]
+	#dialogue_history.append(line_sebelumnya["name"] + ": " + line_sebelumnya["text"])
+
+#func _input(event):
+	#if event.is_action_pressed("ui_focus_next") or (event is InputEventKey and event.keycode == KEY_P and event.pressed):
+		#toggle_pause_dialogue()
+		#return
+#
+	#if save_menu.visible or $ExitConfirm.visible or is_dialogue_paused:
+		#return
+#
+	#if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.pressed):
+		#if event is InputEventMouseButton:
+			#if save_menu.visible: 
+				#return
+				#
+		#if dialogue_text.visible_ratio < 1.0:
+			#dialogue_text.visible_ratio = 1.0
+		#else:
+			#GameManager.current_line += 1
+			#update_dialogue()
+
+
+
+	# ------------------------
+	
+
+	
