@@ -19,14 +19,18 @@ const KEVIN_INSANE = preload("res://assets/wu kaiwen sprites/kevin_insane.png")
 @onready var save_menu = $SaveLoadMenu
 @onready var anlu_sprite = $AnLu
 @onready var kevin_sprite = $WuKaiwen
-@onready var dialogue_text = $Text
-@onready var char_name_label = $CharaName
+@onready var dialogue_text = $DialogueBox/Text
+@onready var char_name_label = $DialogueBox/CharaName
 @onready var fade_overlay = $FadeOverlay
 @onready var intro_label = $FadeOverlay/Text
+@onready var dialogue_box = $DialogueBox
 var save_folder = "res://saves/"
 var is_saving_mode = true
 var last_visible_chars = 0
 var is_intro = true
+
+@onready var box_origin_y = dialogue_box.position.y
+var idle_tween: Tween
 
 # ACT 1 SCENE 1
 var dialogue_data = [
@@ -166,6 +170,8 @@ var dialogue_data = [
 ]
 
 func _ready():
+	dialogue_box.visible = true
+	dialogue_box.modulate.a = 0.0
 	update_dialogue()
 
 func _input(event):
@@ -180,11 +186,13 @@ func _input(event):
 		if dialogue_text.visible_ratio < 1.0:
 			dialogue_text.visible_ratio = 1.0
 		else:
+			dialogue_box.modulate.a = 0.0
 			GameManager.current_line += 1
 			update_dialogue()
 
 func update_dialogue():
 	if GameManager.current_line >= dialogue_data.size():
+		close_dialogue()
 		return
 
 	var data = dialogue_data[GameManager.current_line]
@@ -213,8 +221,8 @@ func update_dialogue():
 		dialogue_text.text = data["text"]
 		dialogue_text.visible_ratio = 0
 		
-		var t = create_tween()
-		t.tween_property(dialogue_text, "visible_ratio", 1.0, 1.0)
+		var fade_in = create_tween()
+		fade_in.tween_property(dialogue_box, "modulate:a", 1.0, 0.15).set_trans(Tween.TRANS_SINE)
 		
 		if data["side"] == "left":
 			apply_focus_animation(anlu_sprite, data["expression"])
@@ -222,6 +230,15 @@ func update_dialogue():
 		elif data["side"] == "right":
 			apply_focus_animation(kevin_sprite, data["expression"])
 			apply_dim_animation(anlu_sprite)
+			
+		var text_tween = create_tween()
+		text_tween.tween_property(dialogue_text, "visible_ratio", 1.0, 1.0)
+
+func close_dialogue():
+	var fade_out = create_tween()
+	fade_out.tween_property(dialogue_box, "modulate:a", 0.0, 0.25).set_trans(Tween.TRANS_SINE)
+	await fade_out.finished
+	dialogue_box.visible = false
 
 func apply_focus_animation(sprite: Sprite2D, texture: Texture2D):
 	sprite.texture = texture
@@ -273,82 +290,3 @@ func _on_exit_confirm_confirmed() -> void:
 			print("Scene change failed with error code: ", error)
 	else:
 		push_error("Exit failed: Scene not found at " + target_scene)
-
-# fitur pause dialog:
-#var is_dialogue_paused = false
-#var active_tween: Tween = null
-#--
-#if active_tween:
-	#active_tween.kill()
-#
-#active_tween = create_tween()
-#active_tween.tween_property(dialogue_text, "visible_ratio", 1.0, 1.0)
-#
-#func _input(event):
-	#if event.is_action_pressed("ui_focus_next") or (event is InputEventKey and event.keycode == KEY_P and event.pressed):
-		#toggle_pause_dialogue()
-		#return
-#
-	#if save_menu.visible or $ExitConfirm.visible or is_dialogue_paused:
-		#return
-#
-	#if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.pressed):
-		#if event is InputEventMouseButton:
-			#if save_menu.visible: 
-				#return
-				#
-		#if dialogue_text.visible_ratio < 1.0:
-			#dialogue_text.visible_ratio = 1.0
-		#else:
-			#GameManager.current_line += 1
-			#update_dialogue()
-
-#func toggle_pause_dialogue():
-	#is_dialogue_paused = !is_dialogue_paused
-	#
-	#if is_dialogue_paused:
-		#print("Dialog Di-pause")
-		#if active_tween and active_tween.is_running():
-			#active_tween.pause()
-		#dialogue_text.modulate.a = 0.5 
-	#else:
-		#print("Dialog Dilanjutkan")
-		#if active_tween:
-			#active_tween.play()
-		#dialogue_text.modulate.a = 1.0
-
-# -----------------------
-
-# fitur untuk backlog dialog
-
-# var dialogue_history: Array = []
-#
-# if GameManager.current_line > 0:
-	#var line_sebelumnya = dialogue_data[GameManager.current_line - 1]
-	#dialogue_history.append(line_sebelumnya["name"] + ": " + line_sebelumnya["text"])
-
-#func _input(event):
-	#if event.is_action_pressed("ui_focus_next") or (event is InputEventKey and event.keycode == KEY_P and event.pressed):
-		#toggle_pause_dialogue()
-		#return
-#
-	#if save_menu.visible or $ExitConfirm.visible or is_dialogue_paused:
-		#return
-#
-	#if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.pressed):
-		#if event is InputEventMouseButton:
-			#if save_menu.visible: 
-				#return
-				#
-		#if dialogue_text.visible_ratio < 1.0:
-			#dialogue_text.visible_ratio = 1.0
-		#else:
-			#GameManager.current_line += 1
-			#update_dialogue()
-
-
-
-	# ------------------------
-	
-
-	

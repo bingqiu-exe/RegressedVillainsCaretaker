@@ -3,9 +3,10 @@
 [ext_resource type="Script" uid="uid://co5tq21su21cy" path="res://scripts/Act1.gd" id="1_22a6r"]
 [ext_resource type="Texture2D" uid="uid://cduy806d2gpel" path="res://assets/background/bg 1 arena.png" id="1_r02wo"]
 [ext_resource type="Texture2D" uid="uid://chr5mlm28txdc" path="res://assets/an lu sprites/anlu_concerned.png" id="2_2kony"]
-[ext_resource type="Texture2D" uid="uid://dyh4r44hl0rwu" path="res://assets/background/frame.png" id="2_142ld"]
 [ext_resource type="Texture2D" uid="uid://dov06hxr0k2xh" path="res://assets/wu kaiwen sprites/kevin_impatient.png" id="3_22a6r"]
 [ext_resource type="FontFile" uid="uid://dogm4bruhqwnh" path="res://assets/fonts/NgeticModern-Regular.otf" id="3_aijdm"]
+[ext_resource type="Texture2D" uid="uid://dtjj080qm3u6y" path="res://assets/background/frame_cut.png" id="5_cmo1w"]
+[ext_resource type="Texture2D" uid="uid://iclpi2b5hkk" path="res://assets/background/dialogue_box.png" id="6_ji43g"]
 [ext_resource type="FontFile" uid="uid://v70lv3oa2inu" path="res://assets/fonts/Lora-VariableFont_wght.ttf" id="6_qn3kx"]
 [ext_resource type="AudioStream" uid="uid://g7qqge6d3gly" path="res://assets/sounds/Chinese traditional music - Erhu (Chinese violin), No copyright.mp3" id="8_ib7mi"]
 [ext_resource type="PackedScene" uid="uid://d0yjx6be6c6ng" path="res://scenes/SaveLoadMenu.tscn" id="9_qn3kx"]
@@ -23,20 +24,20 @@ offset_bottom = 857.0
 layout_mode = 0
 offset_left = -2.0
 offset_top = 1.0
-offset_right = 1465.0
-offset_bottom = 830.0
+offset_right = 1769.0
+offset_bottom = 1024.0
 texture = ExtResource("1_r02wo")
 expand_mode = 1
 
 [node name="AnLu" type="Sprite2D" parent="." unique_id=974106174]
-position = Vector2(100, 200)
-scale = Vector2(0.7, 0.7)
+position = Vector2(39.000004, 203)
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_2kony")
 centered = false
 
 [node name="WuKaiwen" type="Sprite2D" parent="." unique_id=2119758233]
-position = Vector2(800, 200)
-scale = Vector2(0.7, 0.7)
+position = Vector2(760, 206)
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("3_22a6r")
 centered = false
 
@@ -44,9 +45,15 @@ centered = false
 offset_right = 1920.0
 offset_bottom = 1080.0
 mouse_filter = 0
-texture = ExtResource("2_142ld")
+texture = ExtResource("5_cmo1w")
 
-[node name="CharaName" type="Label" parent="." unique_id=1361330131]
+[node name="DialogueBox" type="TextureRect" parent="." unique_id=113605871]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("6_ji43g")
+
+[node name="CharaName" type="Label" parent="DialogueBox" unique_id=1361330131]
+layout_mode = 0
 offset_left = 29.0
 offset_top = 780.0
 offset_right = 387.0
@@ -58,7 +65,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Text" type="Label" parent="." unique_id=1629952588]
+[node name="Text" type="Label" parent="DialogueBox" unique_id=1629952588]
+layout_mode = 0
 offset_left = 87.0
 offset_top = 889.0
 offset_right = 1428.0
@@ -168,6 +176,8 @@ vertical_alignment = 1
 [node name="SaveLoadMenu" parent="." unique_id=1291083673 instance=ExtResource("9_qn3kx")]
 layer = 2
 visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=348996781]
 
 [connection signal="pressed" from="MenuBox/Save" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MenuBox/Load" to="." method="_on_load_button_pressed"]
