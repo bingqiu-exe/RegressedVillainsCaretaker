@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://6immpi5e5kws"
+path="res://.godot/imported/an lu audio.mp3-0cdcba92cf07df8f8c9810ed1f39a21e.mp3str"
+
+[deps]
+
+source_file="res://assets/sounds/an lu audio.mp3"
+dest_files=["res://.godot/imported/an lu audio.mp3-0cdcba92cf07df8f8c9810ed1f39a21e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
